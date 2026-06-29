@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}TaskOps — tasks{% endblock %}
+{% block content %}
+  <section class="panel">
+    <div class="panel__head">
+      <h1 class="panel__title">Tasks</h1>
+      <a class="btn btn--accent" href="{{ url_for('taskops.new_task') }}"
+        >+ New task</a
+      >
+    </div>
+
+    {% if tasks %}
+      <ul class="tasklist">
+        {% for task in tasks %}
+          <li class="task {% if task['is_completed'] %}task--done{% endif %}">
+            <div class="task__main">
+              <span
+                class="pill {% if task['is_completed'] %}pill--done{% else %}pill--pending{% endif %}"
+              >
+                {{ "completed" if task["is_completed"] else "pending" }}
+              </span>
+              <span class="task__title">{{ task["title"] }}</span>
+              {% if task["description"] %}
+                <p class="task__desc">{{ task["description"] }}</p>
+              {% endif %}
+              <span class="task__meta">#{{ task["id"] }} · {{ task["created_at"] }}</span>
+            </div>
+            <div class="task__actions">
+              {% if not task["is_completed"] %}
+                <form
+                  method="post"
+                  action="{{ url_for('taskops.complete', task_id=task['id']) }}"
+                >
+                  <button class="btn btn--small btn--accent" type="submit">
+                    complete
+                  </button>
+                </form>
+              {% endif %}
+              <form
+                method="post"
+                action="{{ url_for('taskops.delete', task_id=task['id']) }}"
+              >
+                <button class="btn btn--small btn--danger" type="submit">
+                  delete
+                </button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">No tasks yet. <a href="{{ url_for('taskops.new_task') }}">Create one.</a></p>
+    {% endif %}
+  </section>
+{% endblock %}

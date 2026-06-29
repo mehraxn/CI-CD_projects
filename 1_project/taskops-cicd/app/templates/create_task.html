@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}TaskOps — new task{% endblock %}
+{% block content %}
+  <section class="panel panel--narrow">
+    <div class="panel__head">
+      <h1 class="panel__title">New task</h1>
+    </div>
+
+    <form class="form" method="post" action="{{ url_for('taskops.new_task') }}">
+      <label class="field">
+        <span class="field__label">Title <span class="req">*</span></span>
+        <input
+          class="field__input"
+          type="text"
+          name="title"
+          maxlength="{{ max_len }}"
+          value="{{ title }}"
+          required
+          autofocus
+        />
+        <span class="field__hint">Required · max {{ max_len }} characters</span>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Description</span>
+        <textarea
+          class="field__input"
+          name="description"
+          rows="4"
+        >{{ description }}</textarea>
+        <span class="field__hint">Optional</span>
+      </label>
+
+      <div class="form__actions">
+        <button class="btn btn--accent" type="submit">Create task</button>
+        <a class="btn" href="{{ url_for('taskops.tasks') }}">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

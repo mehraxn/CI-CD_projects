@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}TaskOps{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('taskops.index') }}">$ taskops</a>
+      <nav class="nav">
+        <a href="{{ url_for('taskops.tasks') }}">tasks</a>
+        <a href="{{ url_for('taskops.new_task') }}">new</a>
+      </nav>
+    </header>
+
+    <main class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes" role="status" aria-live="polite">
+            {% for category, message in messages %}
+              <li class="flash flash--{{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="statusbar">
+      <span class="statusbar__label">health</span>
+      <span class="statusbar__dot" id="health-dot" aria-hidden="true"></span>
+      <span class="statusbar__value" id="health-value">checking…</span>
+    </footer>
+
+    <script>
+      // Footer status bar reflects the /health endpoint response.
+      (function () {
+        var dot = document.getElementById("health-dot");
+        var value = document.getElementById("health-value");
+        fetch("{{ url_for('taskops.health') }}")
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            value.textContent = JSON.stringify(data);
+            dot.classList.add(data.status === "ok" ? "is-ok" : "is-bad");
+          })
+          .catch(function () {
+            value.textContent = "unreachable";
+            dot.classList.add("is-bad");
+          });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}TaskOps — console{% endblock %}
+{% block content %}
+  <section class="hero">
+    <p class="hero__prompt">$ taskops --status</p>
+    <h1 class="hero__title">Operational task tracking.</h1>
+    <p class="hero__lede">
+      A minimal Flask task tracker wired for CI/CD. Add work, mark it done,
+      keep the pipeline green.
+    </p>
+    <div class="hero__actions">
+      <a class="btn btn--accent" href="{{ url_for('taskops.tasks') }}"
+        >View tasks</a
+      >
+      <a class="btn" href="{{ url_for('taskops.new_task') }}">New task</a>
+    </div>
+  </section>
+{% endblock %}
