@@ -1,0 +1,16 @@
+# Dev overrides — runs against the local kind cluster "dev".
+
+replicaCount: 2
+
+image:
+  repository: kubeops
+  tag: local
+  pullPolicy: IfNotPresent
+
+env:
+  APP_ENV: development
+  LOG_LEVEL: DEBUG
+
+ingress:
+  enabled: true
+  host: kubeops.local

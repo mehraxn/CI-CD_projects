@@ -1,0 +1,39 @@
+# Version control
+.git/
+.github/
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Tests, docs and local config
+tests/
+docs/
+docs/screenshots/
+.env
+.env.example
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

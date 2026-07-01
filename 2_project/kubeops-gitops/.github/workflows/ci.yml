@@ -1,0 +1,72 @@
+# CI — test, lint, security scan, Docker build, and Trivy image scan.
+#
+# Runs on every push and pull request. This file lives at the repository
+# root's .github/workflows/, which is the only location GitHub discovers
+# workflows from — the app, requirements-dev.txt, and Dockerfile all sit at
+# the repo root, so no subfolder prefixes are needed.
+#
+# This workflow does NOT deploy anything. Deployment is handled via GitOps
+# (Argo CD) — see docs/gitops.md.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# Read-only token is all CI needs.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test, lint & scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Ruff (lint)
+        run: ruff check .
+
+      - name: Black (format check)
+        run: black --check .
+
+      - name: isort (import order check)
+        run: isort --check-only .
+
+      - name: Pytest
+        run: pytest
+
+      - name: Bandit (Python security scan)
+        run: bandit -r app
+
+      - name: pip-audit (dependency vulnerability scan)
+        run: pip-audit -r requirements.txt
+
+      - name: Docker build
+        run: docker build -t kubeops:ci .
+
+      # Fail the build on HIGH/CRITICAL OS/library vulnerabilities.
+      # `ignore-unfixed` skips vulns that have no fix available yet.
+      - name: Trivy image scan (fail on HIGH/CRITICAL)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: kubeops:ci
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true

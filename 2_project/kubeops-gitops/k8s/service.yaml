@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubeops
+  namespace: kubeops-dev
+  labels:
+    app: kubeops
+spec:
+  type: ClusterIP
+  selector:
+    app: kubeops
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP

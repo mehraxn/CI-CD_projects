@@ -1,0 +1,73 @@
+# Default values for the kubeops chart.
+
+replicaCount: 2
+
+image:
+  repository: kubeops
+  tag: local
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Create a ServiceAccount for the Deployment.
+  create: true
+  # If empty, a name is derived from the fullname template.
+  name: ""
+  annotations: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: ""
+  host: kubeops.local
+  path: /
+  pathType: Prefix
+  annotations: {}
+
+# Non-secret environment variables (rendered into a ConfigMap).
+env:
+  APP_ENV: development
+  LOG_LEVEL: INFO
+
+secret:
+  # When true, render a Secret from .secret.values below.
+  # When false, use an existing secret named .secret.existingSecret.
+  create: true
+  existingSecret: ""
+  values:
+    # Placeholder only — override per environment. Never commit real secrets.
+    APP_SECRET_KEY: "replace-me-with-a-real-secret"
+
+containerPort: 8000
+
+probes:
+  liveness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    path: /ready
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+podAnnotations: {}

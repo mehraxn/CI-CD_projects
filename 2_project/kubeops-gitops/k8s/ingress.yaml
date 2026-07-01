@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubeops
+  namespace: kubeops-dev
+  labels:
+    app: kubeops
+spec:
+  rules:
+    - host: kubeops.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kubeops
+                port:
+                  number: 80

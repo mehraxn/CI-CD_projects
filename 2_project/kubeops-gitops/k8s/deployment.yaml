@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeops
+  namespace: kubeops-dev
+  labels:
+    app: kubeops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kubeops
+  template:
+    metadata:
+      labels:
+        app: kubeops
+    spec:
+      containers:
+        - name: kubeops
+          image: kubeops:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: kubeops-config
+            - secretRef:
+                name: kubeops-secret
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            # readOnlyRootFilesystem: true is safe here — the app writes
+            # nothing to disk and PYTHONDONTWRITEBYTECODE=1 prevents .pyc
+            # writes. Verified: both pods reach Running/READY 1/1 with it on.
+            readOnlyRootFilesystem: true

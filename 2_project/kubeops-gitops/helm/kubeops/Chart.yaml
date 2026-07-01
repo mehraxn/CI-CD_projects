@@ -1,0 +1,7 @@
+apiVersion: v2
+name: kubeops
+description: A Helm chart for the KubeNotes/KubeOps API
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

@@ -1,0 +1,9 @@
+services:
+  api:
+    build: .
+    image: kubeops:local
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}

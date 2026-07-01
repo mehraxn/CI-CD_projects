@@ -1,0 +1,14 @@
+# Normalize all text files to LF in the repository (and on checkout),
+# so Windows/macOS/Linux clones behave identically and Git stops warning
+# about CRLF conversion.
+* text=auto eol=lf
+
+# PowerShell scripts are happiest with CRLF on Windows.
+*.ps1 text eol=crlf
+
+# Binary assets — never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
